@@ -14,4 +14,4 @@
 - Notifies if the value is below or above the stipulated value.
 
 ## Image
-![Captura de Tela 2025-01-13 às 20 02 32](https://github.com/user-attachments/assets/e1ce9e73-7d81-4470-ab42-efe91414b345)
+![Captura de Tela 2025-01-13 às 20 34 00](https://github.com/user-attachments/assets/d7cad8ed-684c-4806-9e28-caaad8888ef5)
