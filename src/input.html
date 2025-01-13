@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Notificação | Definir Limite</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f9;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .container {
+      background: #fff;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      border-radius: 8px;
+      padding: 20px 30px;
+      text-align: center;
+      width: 300px;
+    }
+
+    h1 {
+      color: #333;
+      font-size: 1.5rem;
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      color: #555;
+      font-size: 1rem;
+      margin-bottom: 8px;
+    }
+
+    input[type="text"] {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 15px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      font-size: 1rem;
+    }
+
+    button {
+      background-color: #007bff;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <h1 id="title">Definir Limite</h1>
+    <label for="value">Valor:</label>
+    <input type="text" id="value" placeholder="Digite o valor (ex: 94.448,95)" />
+    <button onclick="setLimit()">Definir</button>
+  </div>
+
+  <script>
+    const { ipcRenderer } = require("electron");
+
+    let currentType = "";
+    ipcRenderer.on("set-type", (event, type) => {
+      currentType = type;
+      document.getElementById("title").innerText = `Definir Limite ${type === "upper" ? "Superior" : "Inferior"}`;
+    });
+
+    // Função de máscara para formatar o valor
+    function applyMask(value) {
+      // Remove tudo que não for número ou vírgula
+      value = value.replace(/[^\d,]/g, "");
+
+      // Divide em parte inteira e decimal
+      const [integerPart, decimalPart] = value.split(",");
+
+      // Adiciona separadores de milhares
+      const formattedInteger = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+
+      return decimalPart !== undefined
+        ? `${formattedInteger},${decimalPart.substring(0, 2)}`
+        : formattedInteger;
+    }
+
+    document.getElementById("value").addEventListener("input", (event) => {
+      const input = event.target;
+      const cursorPosition = input.selectionStart;
+      const oldValue = input.value;
+
+      // Formata o valor
+      const formattedValue = applyMask(oldValue);
+
+      // Calcula a nova posição do cursor
+      const diff = formattedValue.length - oldValue.length;
+      const newCursorPosition = cursorPosition + diff;
+
+      // Atualiza o campo e o cursor
+      input.value = formattedValue;
+      input.setSelectionRange(newCursorPosition, newCursorPosition);
+    });
+
+    function setLimit() {
+      const inputValue = document.getElementById("value").value;
+
+      // Converte o valor do formato brasileiro para um número
+      const formattedValue = parseFloat(
+        inputValue.replace(/\./g, "").replace(",", ".")
+      );
+
+      if (isNaN(formattedValue)) {
+        alert("Por favor, insira um valor válido!");
+        return;
+      }
+
+      ipcRenderer.send("set-limit", { type: currentType, value: formattedValue });
+    }
+  </script>
+</body>
+
+</html>

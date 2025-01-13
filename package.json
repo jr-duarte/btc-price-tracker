@@ -1,0 +1,38 @@
+{
+  "name": "btc-price-tracker",
+  "productName": "Bitcoin Price Tracker",
+  "description": "Aplicativo para monitorar o preço do Bitcoin",
+  "version": "1.0.0",
+  "license": "MIT",
+  "main": "dist/main.js",
+"scripts": {
+  "copy-files": "mkdir -p dist && cp src/input.html dist/input.html && cp src/btc-icon.png dist/btc-icon.png",
+  "dev": "yarn copy-files && tsc && electron .",
+  "build": "yarn copy-files && tsc && electron-builder"
+
+},
+"build": {
+    "appId": "com.example.btcprice",
+    "mac": {
+      "category": "public.app-category.finance",
+      "target": "dmg",
+      "icon": "dist/btc-icon.png"
+    },
+    "files": [
+      "dist/**/*",
+      "src/**/*"
+    ],
+    "directories": {
+      "output": "dist"
+    }
+  },
+  "dependencies": {
+    "@electron/remote": "^2.1.2",
+    "axios": "^1.7.9"
+  },
+  "devDependencies": {
+    "electron-builder": "^25.1.8",
+    "typescript": "^5.7.3",
+    "electron": "^33.3.1"
+  }
+}
