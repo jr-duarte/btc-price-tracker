@@ -1,4 +1,5 @@
 # 📈 Bitcoin Price Tracker (MACOSX)
+Bitcoin Price Tracker monitors Bitcoin price and sends alerts for customizable thresholds, all from your system tray.
 
 ## Main technologies used
 - [TypeScript](https://www.typescriptlang.org/)
